@@ -3,6 +3,7 @@ authors = ["aaron-hardin <aaronrhardin@gmail.com>", "James Waples <james@wapl.es
 categories = ["embedded", "no-std"]
 description = "I2C/SPI driver for the SH1107 OLED display controller"
 documentation = "https://docs.rs/sh1107"
+edition = "2018"
 exclude = [".travis.yml", ".gitignore"]
 keywords = ["no-std", "sh1107", "oled", "embedded", "embedded-hal-driver"]
 license = "MIT OR Apache-2.0"
@@ -10,28 +11,27 @@ name = "sh1107"
 readme = "README.md"
 repository = "https://github.com/aaron-hardin/sh1107"
 version = "0.3.5"
-edition = "2018"
 
 [package.metadata.docs.rs]
-targets = [ "thumbv7m-none-eabi", "thumbv7em-none-eabihf" ]
+targets = ["thumbv7m-none-eabi", "thumbv7em-none-eabihf"]
 
 [dependencies]
-embedded-hal = "0.2.3"
+embedded-hal = "1.0.0"
 
 [dependencies.embedded-graphics]
 optional = true
-version = "0.7.1"
+version = "0.8.1"
 
 [dev-dependencies]
-cortex-m = { version = "0.7" }
-cortex-m-rt = { version = "0.7.1" }
-panic-semihosting = "0.6.0"
+cortex-m = {version = "0.7"}
+cortex-m-rt = {version = "0.7.5"}
 panic-reset = "0.1"
-stm32f4xx-hal = { version = "0.13.2", features = ["rt", "stm32f405"] }
+panic-semihosting = "0.6.0"
+stm32f4xx-hal = {version = "0.22.1", features = ["stm32f405"]}
 
 [dev-dependencies.stm32f1xx-hal]
-version = "0.9.0"
-features = [ "rt", "stm32f103" ]
+features = ["rt", "stm32f103"]
+version = "0.10.0"
 
 [features]
 default = ["graphics"]

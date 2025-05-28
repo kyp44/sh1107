@@ -41,7 +41,10 @@
 //! ```
 
 use core::marker::PhantomData;
-use hal::{self, digital::v2::OutputPin};
+use hal::{
+    self,
+    digital::{ErrorType, OutputPin},
+};
 
 use crate::{
     displayrotation::DisplayRotation,
@@ -99,7 +102,7 @@ impl Builder {
     /// Finish the builder and use I2C to communicate with the display
     pub fn connect_i2c<I2C, CommE>(self, i2c: I2C) -> DisplayMode<RawMode<I2cInterface<I2C>>>
     where
-        I2C: hal::blocking::i2c::Write<Error = CommE>,
+        I2C: hal::i2c::I2c<Error = CommE>,
     {
         let properties = DisplayProperties::new(
             I2cInterface::new(i2c, self.i2c_addr),
@@ -121,8 +124,7 @@ impl Builder {
         cs: CS,
     ) -> DisplayMode<RawMode<SpiInterface<SPI, DC, CS>>>
     where
-        SPI: hal::blocking::spi::Transfer<u8, Error = CommE>
-            + hal::blocking::spi::Write<u8, Error = CommE>,
+        SPI: hal::spi::SpiDevice<u8, Error = CommE>,
         DC: OutputPin<Error = PinE>,
         CS: OutputPin<Error = PinE>,
     {
@@ -147,9 +149,11 @@ impl<PinE> NoOutputPin<PinE> {
         Self { _m: PhantomData }
     }
 }
-
-impl<PinE> OutputPin for NoOutputPin<PinE> {
+impl<PinE: hal::digital::Error> ErrorType for NoOutputPin<PinE> {
     type Error = PinE;
+}
+
+impl<PinE: hal::digital::Error> OutputPin for NoOutputPin<PinE> {
     fn set_low(&mut self) -> Result<(), PinE> {
         Ok(())
     }
